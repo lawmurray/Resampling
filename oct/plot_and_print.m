@@ -26,6 +26,8 @@ function plot_and_print ()
 
     mkdir(FIG_DIR);
     
+    % decision tables
+    clf;
     subplot(1, 3, 1);
     plot_decisions('CPU', 'CPU');
     subplot(1, 3, 2);
@@ -36,6 +38,8 @@ function plot_and_print ()
     saveas(figure(1), file);
     system(sprintf('pdfcrop %s %s', file, file));
     
+    % execution time plot
+    clf;
     subplot(2, 3, 1);
     plot_times('CPU', 'ESS', 6);
     hold on;
@@ -62,6 +66,78 @@ function plot_and_print ()
     plot_times('GPU', 'Rejection', 5);
 
     file = sprintf('%s/times.pdf', FIG_DIR);
+    saveas(figure(1), file);
+    system(sprintf('pdfcrop %s %s', file, file));
+
+    % bias plot
+    clf;
+    subplot(2, 2, 1);
+    plot_bias('CPU', 'Multinomial', 1);
+    hold on;
+    plot_bias('CPU', 'Stratified', 2);
+    plot_bias('CPU', 'Systematic', 3);
+    plot_bias('CPU', 'Metropolis', 4);
+    plot_bias('CPU', 'Rejection', 5);
+    subplot(2, 2, 2);
+    plot_bias('GPU', 'Multinomial', 1);
+    hold on;
+    plot_bias('GPU', 'Stratified', 2);
+    plot_bias('GPU', 'Systematic', 3);
+    plot_bias('GPU', 'Metropolis', 4);
+    plot_bias('GPU', 'Rejection', 5);
+
+    subplot(2, 2, 3);
+    plot_bias('CPU-with-copy', 'Multinomial', 1);
+    hold on;
+    plot_bias('CPU-with-copy', 'Stratified', 2);
+    plot_bias('CPU-with-copy', 'Systematic', 3);
+    plot_bias('CPU-with-copy', 'Metropolis', 4);
+    plot_bias('CPU-with-copy', 'Rejection', 5);
+    subplot(2, 2, 4);
+    plot_bias('GPU-with-copy', 'Multinomial', 1);
+    hold on;
+    plot_bias('GPU-with-copy', 'Stratified', 2);
+    plot_bias('GPU-with-copy', 'Systematic', 3);
+    plot_bias('GPU-with-copy', 'Metropolis', 4);
+    plot_bias('GPU-with-copy', 'Rejection', 5);
+
+    file = sprintf('%s/bias.pdf', FIG_DIR);
+    saveas(figure(1), file);
+    system(sprintf('pdfcrop %s %s', file, file));
+
+    % MSE plot
+    clf;
+    subplot(2, 2, 1);
+    plot_mse('CPU', 'Multinomial', 1);
+    hold on;
+    plot_mse('CPU', 'Stratified', 2);
+    plot_mse('CPU', 'Systematic', 3);
+    plot_mse('CPU', 'Metropolis', 4);
+    plot_mse('CPU', 'Rejection', 5);
+    subplot(2, 2, 2);
+    plot_mse('GPU', 'Multinomial', 1);
+    hold on;
+    plot_mse('GPU', 'Stratified', 2);
+    plot_mse('GPU', 'Systematic', 3);
+    plot_mse('GPU', 'Metropolis', 4);
+    plot_mse('GPU', 'Rejection', 5);
+
+    subplot(2, 2, 3);
+    plot_mse('CPU-with-copy', 'Multinomial', 1);
+    hold on;
+    plot_mse('CPU-with-copy', 'Stratified', 2);
+    plot_mse('CPU-with-copy', 'Systematic', 3);
+    plot_mse('CPU-with-copy', 'Metropolis', 4);
+    plot_mse('CPU-with-copy', 'Rejection', 5);
+    subplot(2, 2, 4);
+    plot_mse('GPU-with-copy', 'Multinomial', 1);
+    hold on;
+    plot_mse('GPU-with-copy', 'Stratified', 2);
+    plot_mse('GPU-with-copy', 'Systematic', 3);
+    plot_mse('GPU-with-copy', 'Metropolis', 4);
+    plot_mse('GPU-with-copy', 'Rejection', 5);
+
+    file = sprintf('%s/mse.pdf', FIG_DIR);
     saveas(figure(1), file);
     system(sprintf('pdfcrop %s %s', file, file));
 end

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export CONFIG_OPTS="--nthreads 1 --disable-assert --enable-single --enable-cuda --with-copy"
+export CONFIG_OPTS="--nthreads 8 --with-cuda"
 export OUTPUT_SUFFIX="gpu-with-copy"
 
 ./run.sh
