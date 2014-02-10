@@ -4,14 +4,14 @@
 % $Date$
 
 % -*- texinfo -*-
-% @deftypefn {Function File} plot_bias ()
+% @deftypefn {Function File} plot_var ()
 %
-% Plot bias.
+% Plot var.
 %
 % @end itemize
 % @end deftypefn
 %
-function plot_bias(device, algorithm, style)
+function plot_var(device, algorithm, style)
     ax = [4 20 -12 -6];
     nc = netcdf(sprintf('results/%s-%s.nc', tolower(algorithm), tolower(device)), 'r');
     Ps = nc{'P'}(:);
@@ -26,10 +26,9 @@ function plot_bias(device, algorithm, style)
     };
 
     for k = 1:2:length(zs)
-        bias2 = nc{'bias2'}(k,:)';
-        bias = bias2./Ps;
+        var = nc{'tr_var'}(k,:)'./Ps;
         
-        h = plot(l2Ps, bias);
+        h = plot(l2Ps, var);
         set(h, 'linestyle', linestyles{style});
         set(h, 'marker', markerstyles{style});
         set(h, 'markerfacecolor', watercolour(style));
@@ -38,7 +37,7 @@ function plot_bias(device, algorithm, style)
         set(h, 'linewidth', zs(k));
 
         xlabel('log_2 N');
-        ylabel('||Bias(o)||^2/N');
+        ylabel('tr(Var(o))/N');
         grid on;
         if k == length(zs)
             legend(h, algorithm, 'location', 'northwest');

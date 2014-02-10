@@ -37,7 +37,7 @@ function plot_decisions(backend1, backend2)
         nc = netcdf(sprintf('results/%s-%s.nc', tolower(cs{i}), tolower(backends{j})),
         'r');
         P2 = log2(nc{'P'}(:));
-        Z2 = nc{'z'}(:);
+        Z2 = nc{'Z'}(:);
         [PP2, ZZ2] = meshgrid(P2, Z2);
 
         times2 = nc{'time'}(:,:,:);
