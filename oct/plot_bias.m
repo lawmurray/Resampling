@@ -12,7 +12,7 @@
 % @end deftypefn
 %
 function plot_bias(device, algorithm, style)
-    ax = [4 20 -12 -6];
+    ax = [4 20 1e-5 1e-1];
     nc = netcdf(sprintf('results/%s-%s.nc', tolower(algorithm), tolower(device)), 'r');
     Ps = nc{'P'}(:);
     l2Ps = log2(Ps);
@@ -29,7 +29,7 @@ function plot_bias(device, algorithm, style)
         bias2 = nc{'bias2'}(k,:)';
         bias = bias2./Ps;
         
-        h = plot(l2Ps, bias);
+        h = semilogy(l2Ps, bias);
         set(h, 'linestyle', linestyles{style});
         set(h, 'marker', markerstyles{style});
         set(h, 'markerfacecolor', watercolour(style));
@@ -44,7 +44,7 @@ function plot_bias(device, algorithm, style)
             legend(h, algorithm, 'location', 'northwest');
         end
         legend('right');
-        %axis(ax);
+        axis(ax);
         hold on;
     end
 end

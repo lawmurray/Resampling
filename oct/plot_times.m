@@ -15,7 +15,7 @@ function plot_times(device, algorithm, style)
     ax = [4 20 0 7];          
     nc = netcdf(sprintf('results/%s-%s.nc', tolower(algorithm), tolower(device)), 'r');
     l2Ps = log2(nc{'P'}(:));
-    zs = nc{'z'}(:);
+    zs = nc{'Z'}(:);
     
     linestyles = {
          '-'; '-'; '-'; '-'; '-'; '--'; '--';

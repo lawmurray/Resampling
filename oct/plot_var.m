@@ -12,7 +12,7 @@
 % @end deftypefn
 %
 function plot_var(device, algorithm, style)
-    ax = [4 20 -12 -6];
+    ax = [4 20 1e-2 1e2];
     nc = netcdf(sprintf('results/%s-%s.nc', tolower(algorithm), tolower(device)), 'r');
     Ps = nc{'P'}(:);
     l2Ps = log2(Ps);
@@ -28,7 +28,7 @@ function plot_var(device, algorithm, style)
     for k = 1:2:length(zs)
         var = nc{'tr_var'}(k,:)'./Ps;
         
-        h = plot(l2Ps, var);
+        h = semilogy(l2Ps, var);
         set(h, 'linestyle', linestyles{style});
         set(h, 'marker', markerstyles{style});
         set(h, 'markerfacecolor', watercolour(style));
@@ -43,7 +43,7 @@ function plot_var(device, algorithm, style)
             legend(h, algorithm, 'location', 'northwest');
         end
         legend('right');
-        %axis(ax);
+        axis(ax);
         hold on;
     end
 end
