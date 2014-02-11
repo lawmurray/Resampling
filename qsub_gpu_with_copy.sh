@@ -4,5 +4,10 @@
 
 source ~/init.sh
 cd $PBS_O_WORKDIR
+SEED=$PBS_ARRAYID
 
-./run_gpu_with_copy.sh
+export KMP_AFFINITY=compact
+export CONFIG_OPTS="--seed $SEED --with-cuda --with-copy"
+export OUTPUT_SUFFIX="gpu-with-copy-$SEED"
+
+./run.sh

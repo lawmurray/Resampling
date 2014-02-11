@@ -1,7 +1,7 @@
 #!/bin/sh
 
-export KMP_AFFINITY=verbose,compact
-export CONFIG_OPTS="--nthreads 8"
+export KMP_AFFINITY=compact
+export CONFIG_OPTS="--with-copy"
 export OUTPUT_SUFFIX="cpu-with-copy"
 
 ./run.sh

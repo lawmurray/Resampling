@@ -4,5 +4,10 @@
 
 source ~/init.sh
 cd $PBS_O_WORKDIR
+SEED=$PBS_ARRAYID
 
-./run_cpu.sh
+export KMP_AFFINITY=compact
+export CONFIG_OPTS="--seed $SEED"
+export OUTPUT_SUFFIX="cpu-$SEED"
+
+./run.sh

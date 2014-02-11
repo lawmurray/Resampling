@@ -1,6 +1,6 @@
 #!/bin/sh
 
-COMMON_OPTS="--Zs 9 --Ps 17 --reps 256 --without-sort --seed 0 --disable-assert --enable-single --enable-cuda"
+COMMON_OPTS="--Zs 9 --Ps 19 --reps 256 --without-sort --disable-assert --enable-single --enable-cuda --nthreads 8"
 
 libbi test_resampler $CONFIG_OPTS $COMMON_OPTS --resampler multinomial --output-file results/multinomial-$OUTPUT_SUFFIX.nc
 libbi test_resampler $CONFIG_OPTS $COMMON_OPTS --resampler stratified --output-file results/stratified-$OUTPUT_SUFFIX.nc
