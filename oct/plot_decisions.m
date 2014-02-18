@@ -40,13 +40,30 @@ function plot_decisions(backend1, backend2)
         Z2 = nc{'Z'}(:);
         [PP2, ZZ2] = meshgrid(P2, Z2);
 
-        times2 = nc{'time'}(:,:,:);
-        mean2 = mean(times2, 3);
-        surf2 = interp2(PP2, ZZ2, log10(mean2), PP1, ZZ1, 'linear');
+        times = [];
+        run = 0;
+        file = sprintf('results/%s-%s-%d.nc', tolower(cs{i}),
+            tolower(backends{j}), run);
+        while exist(file, 'file')
+            nc = netcdf(file, 'r');
+            P2 = log2(nc{'P'}(:));
+            Z2 = nc{'Z'}(:);
+            [PP2, ZZ2] = meshgrid(P2, Z2);
+    
+            t = nc{'time'}(:,:,2:end)/1e6; % us to s, and remove first for cache
+            times = cat(3, times, t);
+        
+            run = run + 1;
+            file = sprintf('results/%s-%s-%d.nc', tolower(cs{i}),
+                tolower(backends{j}), run);
+        end
+
+        mean2 = mean(times, 3);
+        surf2 = interp2(PP2, ZZ2, mean2, PP1, ZZ1, 'linear');
 
         % aggregates
-        mx = max([mx; log10(mean2(:))]);
-        mn = min([mn; log10(mean2(:))]);
+        mx = max([mx; mean2(:)]);
+        mn = min([mn; mean2(:)]);
         if length(all{j}) == 0
             all{j} = zeros(rows(surf2), columns(surf2), length(cs));
         end

@@ -11,7 +11,7 @@
 %
 function plot_and_print ()
     FIG_DIR = strcat(pwd, '/figs');
-    sz = [ 8 6 ];
+    sz = [ 9 5.5 ];
 
     % output setup
     figure(1, 'visible', 'off');
@@ -28,86 +28,64 @@ function plot_and_print ()
     
     % decision tables
     clf;
-    subplot(1, 3, 1);
-    plot_decisions('CPU', 'CPU');
-    subplot(1, 3, 2);
-    plot_decisions('GPU', 'GPU');
-    subplot(1, 3, 3);
-    plot_decisions('CPU', 'GPU');
+    subplot(1, 2, 1);
+    plot_decisions('CPU', 'GPU-with-copy');
+    subplot(1, 2, 2);
+    plot_decisions('CPU-with-copy', 'GPU');
     file = sprintf('%s/decisions.pdf', FIG_DIR);
     saveas(figure(1), file);
     system(sprintf('pdfcrop %s %s', file, file));
     
-    % execution time plot
-    clf;
-    subplot(2, 3, 1);
-    plot_times('CPU', 'ESS', 6);
-    hold on;
-    plot_times('CPU', 'Sort', 7);
-    plot_times('CPU', 'Multinomial', 1);
-    plot_times('CPU', 'Stratified', 2);
-    plot_times('CPU', 'Systematic', 3);
-    hold off;
-    subplot(2, 3, 2);
-    plot_times('CPU', 'Metropolis', 4);
-    subplot(2, 3, 3);
-    plot_times('CPU', 'Rejection', 5);
-    subplot(2, 3, 4);
-    plot_times('GPU', 'ESS', 6);
-    plot_times('GPU', 'Sort', 7);
-    hold on;
-    plot_times('GPU', 'Multinomial', 1);
-    plot_times('GPU', 'Stratified', 2);
-    plot_times('GPU', 'Systematic', 3);
-    hold off;
-    subplot(2, 3, 5);
-    plot_times('GPU', 'Metropolis', 4);
-    subplot(2, 3, 6);
-    plot_times('GPU', 'Rejection', 5);
-
-    file = sprintf('%s/times.pdf', FIG_DIR);
-    saveas(figure(1), file);
-    system(sprintf('pdfcrop %s %s', file, file));
-
-    % bias plot
-    clf;
-    subplot(2, 2, 1);
-    plot_bias('CPU', 'Multinomial', 1);
-    hold on;
-    plot_bias('CPU', 'Stratified', 2);
-    plot_bias('CPU', 'Systematic', 3);
-    plot_bias('CPU', 'Metropolis', 4);
-    plot_bias('CPU', 'Rejection', 5);
-    subplot(2, 2, 2);
-    plot_bias('GPU', 'Multinomial', 1);
-    hold on;
-    plot_bias('GPU', 'Stratified', 2);
-    plot_bias('GPU', 'Systematic', 3);
-    plot_bias('GPU', 'Metropolis', 4);
-    plot_bias('GPU', 'Rejection', 5);
-
-    file = sprintf('%s/bias.pdf', FIG_DIR);
-    saveas(figure(1), file);
-    system(sprintf('pdfcrop %s %s', file, file));
-
-    % MSE plot
-    clf;
-    subplot(2, 2, 1);
-    plot_var('CPU', 'Multinomial', 1);
-    hold on;
-    plot_var('CPU', 'Stratified', 2);
-    plot_var('CPU', 'Systematic', 3);
-    plot_var('CPU', 'Metropolis', 4);
-    plot_var('CPU', 'Rejection', 5);
-    subplot(2, 2, 2);
-    plot_var('GPU', 'Multinomial', 1);
-    hold on;
-    plot_var('GPU', 'Stratified', 2);
-    plot_var('GPU', 'Systematic', 3);
-    plot_var('GPU', 'Metropolis', 4);
-    plot_var('GPU', 'Rejection', 5);
-
-    file = sprintf('%s/var.pdf', FIG_DIR);
-    saveas(figure(1), file);
-    system(sprintf('pdfcrop %s %s', file, file));
+    plots = {'times'; 'bias'; 'var'};
+    ylabels = {'Time (s)'; '||Bias(o)||^2/N'; 'tr(Var(o))/N'};
+    
+    for i = 1:length(plots)
+        f = str2func(sprintf('plot_%s', plots{i}));
+        clf;
+        
+        subplot(2, 3, 1);
+        f('CPU', 'Multinomial', 1);
+        legend(get(gca, 'children')(1), 'Multinomial CPU');
+        ylabel(ylabels{i});
+        legend('right');
+        hold on;
+        f('CPU', 'Stratified', 2);
+        legend(get(gca, 'children')(1), 'Stratified CPU');
+        f('CPU', 'Systematic', 3);
+        legend(get(gca, 'children')(1), 'Systematic CPU');
+        subplot(2, 3, 2);
+        f('CPU', 'Metropolis', 4);
+        legend(get(gca, 'children')(1), 'Metropolis CPU');
+        legend('right');
+        subplot(2, 3, 3);
+        f('CPU', 'Rejection', 5);
+        legend(get(gca, 'children')(1), 'Rejection CPU');
+        legend('right');
+        
+        subplot(2, 3, 4);
+        f('GPU', 'Multinomial', 1);
+        legend(get(gca, 'children')(1), 'Multinomial GPU');
+        xlabel('log_2 N');
+        ylabel(ylabels{i});
+        legend('right');
+        hold on;
+        f('GPU', 'Stratified', 2);
+        legend(get(gca, 'children')(1), 'Stratified GPU');
+        f('GPU', 'Systematic', 3);
+        legend(get(gca, 'children')(1), 'Systematic GPU');
+        subplot(2, 3, 5);
+        f('GPU', 'Metropolis', 4);
+        legend(get(gca, 'children')(1), 'Metropolis GPU');
+        xlabel('log_2 N');
+        legend('right');
+        subplot(2, 3, 6);
+        f('GPU', 'Rejection', 5);
+        legend(get(gca, 'children')(1), 'Rejection GPU');
+        xlabel('log_2 N');
+        legend('right');
+        
+        file = sprintf('%s/%s.pdf', FIG_DIR, plots{i});
+        saveas(figure(1), file);
+        system(sprintf('pdfcrop %s %s', file, file));
+    end
 end

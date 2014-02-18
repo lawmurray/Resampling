@@ -12,12 +12,8 @@
 % @end deftypefn
 %
 function plot_bias(device, algorithm, style)
-    ax = [4 20 1e-5 1e-1];
-    nc = netcdf(sprintf('results/%s-%s.nc', tolower(algorithm), tolower(device)), 'r');
-    Ps = nc{'P'}(:);
-    l2Ps = log2(Ps);
-    zs = nc{'Z'}(:);
-    
+    % config
+    ax = [4 22 1e-5 1e-1];
     linestyles = {
          '-'; '-'; '-'; '-'; '-'; '--'; '--';
     };
@@ -25,26 +21,48 @@ function plot_bias(device, algorithm, style)
         '+'; 'o'; 'x'; 's'; '^'; 'd'; '*';
     };
 
-    for k = 1:2:length(zs)
-        bias2 = nc{'bias2'}(k,:)';
-        bias = bias2./Ps;
+    % gather results
+    bias2 = [];
+    run = 0;
+    file = sprintf('results/%s-%s-%d.nc', tolower(algorithm),
+        tolower(device), run);
+    while exist(file, 'file')
+        nc = netcdf(file, 'r');
+        Ps = nc{'P'}(:);
+        l2Ps = log2(Ps);
+        Zs = nc{'Z'}(:);
+    
+        bias2 = [ bias2; nc{'bias2'}(:,:)./repmat(Ps', rows(Zs), 1) ];
         
-        h = semilogy(l2Ps, bias);
-        set(h, 'linestyle', linestyles{style});
-        set(h, 'marker', markerstyles{style});
-        set(h, 'markerfacecolor', watercolour(style));
-        set(h, 'markersize', 1 + zs(k));
-        set(h, 'color', watercolour(style));
-        set(h, 'linewidth', zs(k));
-
-        xlabel('log_2 N');
-        ylabel('||Bias(o)||^2/N');
-        grid on;
-        if k == length(zs)
-            legend(h, algorithm, 'location', 'northwest');
-        end
-        legend('right');
-        axis(ax);
-        hold on;
+        run = run + 1;
+        file = sprintf('results/%s-%s-%d.nc', tolower(algorithm),
+          tolower(device), run);
     end
+        
+    %mn = quantile(bias2, 0.025);
+    %mx = quantile(bias2, 0.975);
+
+    ish = ishold;
+    %area_between(l2Ps, mn, mx, watercolour(style), 1.0, 0.5);
+    hold on;
+    for z = 1:2:length(Zs)
+        mid = median(bias2(z:length(Zs):end,:), 1);
+        h = semilogy(l2Ps, mid,
+            'linestyle', linestyles{style},
+            'marker', markerstyles{style},
+            'markerfacecolor', watercolour(style),
+            'markersize', floor(1 + 0.5*z),
+            'color', watercolour(style),
+            'linewidth', floor(1 + 0.5*z));
+    end
+    if !ish
+        hold off;
+    end
+        
+    %xlabel('log_2 N');
+    %ylabel('||Bias(o)||^2/N');
+    grid on;
+    %legend(h, algorithm, 'location', 'northwest');
+    %legend('right');
+    axis(ax);
 end
