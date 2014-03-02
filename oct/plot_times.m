@@ -67,7 +67,7 @@ function plot_times(device, algorithm, style)
         
     %xlabel('log_2 N');
     %ylabel('||Bias(o)||^2/N');
-    grid on;
+    %grid on;
     %legend(h, algorithm, 'location', 'northwest');
     %legend('right');
     axis(ax);

@@ -13,7 +13,7 @@
 %
 function plot_var(device, algorithm, style)
     % config
-    ax = [4 22 1e-2 1e1];
+    ax = [4 22 1e-2 1e2];
     linestyles = {
          '-'; '-'; '-'; '-'; '-'; '--'; '--';
     };
@@ -61,7 +61,7 @@ function plot_var(device, algorithm, style)
         
     %xlabel('log_2 N');
     %ylabel('tr(Var(o))/N');
-    grid on;
+    %grid on;
     %legend(h, algorithm, 'location', 'northwest');
     %legend('right');
     axis(ax);

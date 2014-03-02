@@ -13,7 +13,7 @@
 %
 function plot_bias(device, algorithm, style)
     % config
-    ax = [4 22 1e-5 1e-1];
+    ax = [4 22 1e-4 1];
     linestyles = {
          '-'; '-'; '-'; '-'; '-'; '--'; '--';
     };
@@ -61,7 +61,7 @@ function plot_bias(device, algorithm, style)
         
     %xlabel('log_2 N');
     %ylabel('||Bias(o)||^2/N');
-    grid on;
+    %grid on;
     %legend(h, algorithm, 'location', 'northwest');
     %legend('right');
     axis(ax);

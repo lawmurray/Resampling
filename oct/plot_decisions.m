@@ -23,8 +23,8 @@ function plot_decisions(backend1, backend2)
 
     B = length(backends);
     C = length(cs);
-    P1 = linspace(4, 20, 200)';
-    Z1 = linspace(0, 4, 200)';
+    P1 = linspace(4, 22, 220)';
+    Z1 = linspace(0, 4, 220)';
     [PP1, ZZ1] = meshgrid(P1, Z1);
 
     % compute axis bounds etc
@@ -34,12 +34,6 @@ function plot_decisions(backend1, backend2)
       all{j} = [];
 
       for i = 1:C  % algorithms
-        nc = netcdf(sprintf('results/%s-%s.nc', tolower(cs{i}), tolower(backends{j})),
-        'r');
-        P2 = log2(nc{'P'}(:));
-        Z2 = nc{'Z'}(:);
-        [PP2, ZZ2] = meshgrid(P2, Z2);
-
         times = [];
         run = 0;
         file = sprintf('results/%s-%s-%d.nc', tolower(cs{i}),
