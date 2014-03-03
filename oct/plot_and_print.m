@@ -11,7 +11,7 @@
 %
 function plot_and_print ()
     FIG_DIR = strcat(pwd, '/figs');
-    sz = [ 9 5.5 ];
+    sz = [ 11 6.5 ];
 
     % output setup
     figure(1, 'visible', 'off');
@@ -58,6 +58,13 @@ function plot_and_print ()
         legend(get(gca, 'children')(1), 'Stratified CPU');
         f('CPU', 'Systematic', 3);
         legend(get(gca, 'children')(1), 'Systematic CPU');
+        if strcmp(plots{i}, 'times')
+            f('CPU', 'ESS', 6);
+            legend(get(gca, 'children')(1), 'ESS CPU');
+            f('CPU', 'Sort', 7);
+            legend(get(gca, 'children')(1), 'Sort CPU');            
+        end
+        
         subplot(2, 3, 2);
         f('CPU', 'Metropolis', 4);
         legend(get(gca, 'children')(1), 'Metropolis CPU');
@@ -87,6 +94,13 @@ function plot_and_print ()
         legend(get(gca, 'children')(1), 'Stratified GPU');
         f('GPU', 'Systematic', 3);
         legend(get(gca, 'children')(1), 'Systematic GPU');
+        if strcmp(plots{i}, 'times')
+            f('GPU', 'ESS', 6);
+            legend(get(gca, 'children')(1), 'ESS GPU');
+            f('GPU', 'Sort', 7);
+            legend(get(gca, 'children')(1), 'Sort GPU');
+        end
+
         subplot(2, 3, 5);
         f('GPU', 'Metropolis', 4);
         legend(get(gca, 'children')(1), 'Metropolis GPU');
