@@ -11,7 +11,13 @@
 % @end itemize
 % @end deftypefn
 %
-function plot_times(device, algorithm, style)
+function plot_times(device, algorithm, style, z)
+    if nargin < 3
+        print_usage ();
+    elseif nargin < 4
+        z = [];
+    end
+    
     % config
     ax = [4 22 1e-6 1e2];
     linestyles = {
@@ -30,9 +36,14 @@ function plot_times(device, algorithm, style)
         nc = netcdf(file, 'r');
         Ps = nc{'P'}(:);
         l2Ps = log2(Ps);
-        Zs = nc{'Z'}(:);
+        if !isempty(z)
+            Zs = nc{'Z'}(z);
+            t = nc{'time'}(z,:,2:end)/1e6;
+        else
+            Zs = nc{'Z'}(:);
+            t = nc{'time'}(:,:,2:end)/1e6;
+        end
     
-        t = nc{'time'}(:,:,2:end)/1e6; % us to s, and remove first for cache
         times = cat(3, times, t);
         
         run = run + 1;
@@ -46,8 +57,8 @@ function plot_times(device, algorithm, style)
     ish = ishold;
     %area_between(l2Ps, mn, mx, watercolour(style), 1.0, 0.5);
     hold on;
-    for z = 1:2:length(Zs)
-        t = squeeze(times(z,:,:));
+    for k = 1:2:length(Zs)
+        t = squeeze(times(k,:,:));
         %mn = quantile(t, 0.025, 2);
         %mx = quantile(t, 0.975, 2);
         mid = mean(t, 2);
@@ -56,9 +67,9 @@ function plot_times(device, algorithm, style)
             'linestyle', linestyles{style},
             'marker', markerstyles{style},
             'markerfacecolor', watercolour(style),
-            'markersize', floor(1 + 0.5*z),
+            'markersize', floor(1 + Zs(k)),
             'color', watercolour(style),
-            'linewidth', floor(1 + 0.5*z));
+            'linewidth', floor(1 + Zs(k)));
             
     end
     if !ish

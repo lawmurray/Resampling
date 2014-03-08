@@ -96,6 +96,6 @@ function plot_decisions(backend1, backend2)
     end
 
     xlabel('log_2 N');
-    ylabel('z');
+    ylabel('y');
     axis('square', 'tight');
 end

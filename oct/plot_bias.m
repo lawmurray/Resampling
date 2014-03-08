@@ -11,7 +11,13 @@
 % @end itemize
 % @end deftypefn
 %
-function plot_bias(device, algorithm, style)
+function plot_bias(device, algorithm, style, z)
+    if nargin < 3
+        print_usage ();
+    elseif nargin < 4
+        z = [];
+    end
+    
     % config
     ax = [4 22 1e-4 1];
     linestyles = {
@@ -30,9 +36,15 @@ function plot_bias(device, algorithm, style)
         nc = netcdf(file, 'r');
         Ps = nc{'P'}(:);
         l2Ps = log2(Ps);
-        Zs = nc{'Z'}(:);
+        if !isempty(z)
+            Zs = nc{'Z'}(z);
+            x = nc{'bias2'}(z,:);
+        else
+            Zs = nc{'Z'}(:);
+            x = nc{'bias2'}(:,:);
+        end
     
-        bias2 = [ bias2; nc{'bias2'}(:,:)./repmat(Ps', rows(Zs), 1) ];
+        bias2 = [ bias2; x./repmat(Ps', rows(Zs), 1) ];
         
         run = run + 1;
         file = sprintf('results/%s-%s-%d.nc', tolower(algorithm),
@@ -45,15 +57,15 @@ function plot_bias(device, algorithm, style)
     ish = ishold;
     %area_between(l2Ps, mn, mx, watercolour(style), 1.0, 0.5);
     hold on;
-    for z = 1:2:length(Zs)
-        mid = median(bias2(z:length(Zs):end,:), 1);
+    for k = 1:2:length(Zs)
+        mid = median(bias2(k:length(Zs):end,:), 1);
         h = semilogy(l2Ps, mid,
             'linestyle', linestyles{style},
             'marker', markerstyles{style},
             'markerfacecolor', watercolour(style),
-            'markersize', floor(1 + 0.5*z),
+            'markersize', floor(1 + Zs(k)),
             'color', watercolour(style),
-            'linewidth', floor(1 + 0.5*z));
+            'linewidth', floor(1 + Zs(k)));
     end
     if !ish
         hold off;

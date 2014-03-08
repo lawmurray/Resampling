@@ -11,7 +11,13 @@
 % @end itemize
 % @end deftypefn
 %
-function plot_var(device, algorithm, style)
+function plot_var(device, algorithm, style, z)
+    if nargin < 3
+        print_usage ();
+    elseif nargin < 4
+        z = [];
+    end
+
     % config
     ax = [4 22 1e-2 1e2];
     linestyles = {
@@ -30,9 +36,15 @@ function plot_var(device, algorithm, style)
         nc = netcdf(file, 'r');
         Ps = nc{'P'}(:);
         l2Ps = log2(Ps);
-        Zs = nc{'Z'}(:);
-    
-        var = [ var; nc{'tr_var'}(:,:)./repmat(Ps', rows(Zs), 1) ];
+        if !isempty(z)
+            Zs = nc{'Z'}(z);
+            x = nc{'tr_var'}(z,:);
+        else
+            Zs = nc{'Z'}(:);
+            x = nc{'tr_var'}(:,:);
+        end
+
+        var = [ var; x./repmat(Ps', rows(Zs), 1) ];
         
         run = run + 1;
         file = sprintf('results/%s-%s-%d.nc', tolower(algorithm),
@@ -45,15 +57,15 @@ function plot_var(device, algorithm, style)
     ish = ishold;
     %area_between(l2Ps, mn, mx, watercolour(style), 1.0, 0.5);
     hold on;
-    for z = 1:2:length(Zs)
-        mid = median(var(z:length(Zs):end,:), 1);
+    for k = 1:2:length(Zs)
+        mid = median(var(k:length(Zs):end,:), 1);
         h = semilogy(l2Ps, mid,
             'linestyle', linestyles{style},
             'marker', markerstyles{style},
             'markerfacecolor', watercolour(style),
-            'markersize', floor(1 + 0.5*z),
+            'markersize', floor(1 + Zs(k)),
             'color', watercolour(style),
-            'linewidth', floor(1 + 0.5*z));
+            'linewidth', floor(1 + Zs(k)));
     end
     if !ish
         hold off;
