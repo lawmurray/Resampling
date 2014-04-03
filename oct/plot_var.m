@@ -4,7 +4,7 @@
 % $Date$
 
 % -*- texinfo -*-
-% @deftypefn {Function File} plot_bias ()
+% @deftypefn {Function File} plot_var ()
 %
 % Plot variance.
 %
@@ -33,32 +33,25 @@ function plot_var(device, algorithm, style, z)
     file = sprintf('results/%s-%s-%d.nc', tolower(algorithm),
         tolower(device), run);
     while exist(file, 'file')
-        nc = netcdf(file, 'r');
-        Ps = nc{'P'}(:);
+        Ps = ncread(file, 'P');
         l2Ps = log2(Ps);
         if !isempty(z)
-            Zs = nc{'Z'}(z);
-            x = nc{'tr_var'}(z,:);
+            Zs = ncread(file, 'Z')(z);
+            x = ncread(file, 'tr_var')(z,:);
         else
-            Zs = nc{'Z'}(:);
-            x = nc{'tr_var'}(:,:);
+            Zs = ncread(file, 'Z');
+            x = ncread(file, 'tr_var');
         end
 
-        var = [ var; x./repmat(Ps', rows(Zs), 1) ];
+        var = [ var x./repmat(double(Ps), 1, length(Zs)) ];
         
         run = run + 1;
         file = sprintf('results/%s-%s-%d.nc', tolower(algorithm),
           tolower(device), run);
     end
-        
-    %mn = min(var, [], 1);
-    %mx = max(var, [], 1);
 
-    ish = ishold;
-    %area_between(l2Ps, mn, mx, watercolour(style), 1.0, 0.5);
-    hold on;
     for k = 1:2:length(Zs)
-        mid = median(var(k:length(Zs):end,:), 1);
+        mid = mean(var(:,k:length(Zs):end), 2);
         h = semilogy(l2Ps, mid,
             'linestyle', linestyles{style},
             'marker', markerstyles{style},
@@ -66,9 +59,6 @@ function plot_var(device, algorithm, style, z)
             'markersize', floor(1 + Zs(k)),
             'color', watercolour(style),
             'linewidth', floor(1 + Zs(k)));
-    end
-    if !ish
-        hold off;
     end
         
     %xlabel('log_2 N');

@@ -39,20 +39,20 @@ function plot_decisions(backend1, backend2)
         file = sprintf('results/%s-%s-%d.nc', tolower(cs{i}),
             tolower(backends{j}), run);
         while exist(file, 'file')
-            nc = netcdf(file, 'r');
-            P2 = log2(nc{'P'}(:));
-            Z2 = nc{'Z'}(:);
+            P2 = log2(ncread(file, 'P'));
+            Z2 = ncread(file, 'Z');
             [PP2, ZZ2] = meshgrid(P2, Z2);
     
-            t = nc{'time'}(:,:,2:end)/1e6; % us to s, and remove first for cache
-            times = cat(3, times, t);
+            t = double(ncread(file, 'time')(2:end,:,:))/1e6;
+            % ^ us to s, and remove first for cache
+            times = cat(1, times, t);
         
             run = run + 1;
             file = sprintf('results/%s-%s-%d.nc', tolower(cs{i}),
                 tolower(backends{j}), run);
         end
 
-        mean2 = mean(times, 3);
+        mean2 = squeeze(mean(times, 1))';
         surf2 = interp2(PP2, ZZ2, mean2, PP1, ZZ1, 'linear');
 
         % aggregates
