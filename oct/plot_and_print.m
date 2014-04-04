@@ -129,7 +129,7 @@ function plot_and_print ()
         system(sprintf('pdfcrop %s %s', file, file));
     end
     
-        % Metropolis plot
+    % Metropolis plot
     clf;
     subplot(2, 3, 1);
     plot_bias('GPU', 'Metropolis-c1', 4, 9);

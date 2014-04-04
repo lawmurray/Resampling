@@ -37,29 +37,32 @@ function plot_times(device, algorithm, style, z)
         l2Ps = log2(Ps);
         if !isempty(z)
             Zs = ncread(file, 'Z')(z);
-            t = double(ncread(file, 'time')(z,:,2:end))/1e6; % skip first due to cache
+            t = double(ncread(file, 'time')(2:end,:,z))/1e6; % skip first due to cache
         else
             Zs = ncread(file, 'Z');
-            t = double(ncread(file, 'time')(:,:,2:end))/1e6; % skip first due to cache
+            t = double(ncread(file, 'time')(2:end,:,:))/1e6; % skip first due to cache
         end
-        times = cat(3, times, t);
+        times = cat(1, times, t);
         
         run = run + 1;
         file = sprintf('results/%s-%s-%d.nc', tolower(algorithm),
           tolower(device), run);
     end
 
+    ish = ishold;
     for k = 1:2:length(Zs)
-        t = squeeze(times(k,:,:));
-        mid = mean(t, 2);
-        h = semilogy(l2Ps, mid,
+        t = mean(squeeze(times(:,:,k)), 1);
+        h = semilogy(l2Ps, t,
             'linestyle', linestyles{style},
             'marker', markerstyles{style},
             'markerfacecolor', watercolour(style),
             'markersize', floor(1 + Zs(k)),
             'color', watercolour(style),
             'linewidth', floor(1 + Zs(k)));
-            
+        hold on;
+    end
+    if !ish
+        hold off;
     end
         
     %xlabel('log_2 N');

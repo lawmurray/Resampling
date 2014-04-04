@@ -37,7 +37,7 @@ function plot_bias(device, algorithm, style, z)
         l2Ps = log2(Ps);
         if !isempty(z)
             Zs = ncread(file, 'Z')(z);
-            x = ncread(file, 'bias2')(z,:);
+            x = ncread(file, 'bias2')(:,z);
         else
             Zs = ncread(file, 'Z');
             x = ncread(file, 'bias2');
@@ -49,6 +49,7 @@ function plot_bias(device, algorithm, style, z)
           tolower(device), run);
     end
 
+    ish = ishold;
     for k = 1:2:length(Zs)
         mid = mean(bias2(:,k:length(Zs):end), 2);
         h = semilogy(l2Ps, mid,
@@ -58,6 +59,10 @@ function plot_bias(device, algorithm, style, z)
             'markersize', floor(1 + Zs(k)),
             'color', watercolour(style),
             'linewidth', floor(1 + Zs(k)));
+        hold on;
+    end
+    if !ish
+        hold off;
     end
         
     %xlabel('log_2 N');
