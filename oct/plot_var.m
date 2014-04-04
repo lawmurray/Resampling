@@ -60,6 +60,7 @@ function plot_var(device, algorithm, style, z)
             'markersize', floor(1 + Zs(k)),
             'color', watercolour(style),
             'linewidth', floor(1 + Zs(k)));
+       hold on;
     end
     if !ish
         hold off;

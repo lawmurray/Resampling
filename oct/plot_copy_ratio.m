@@ -42,7 +42,7 @@ function plot_copy_ratio()
               times2 = squeeze(double(ncread(file2, 'time')(:,:,k)));
               times = times2./times1;
 
-              middle = median(times, 1)';
+              middle = mean(times, 1)';
               err1 = quantile(times, 0.975, 1)';
               err2 = quantile(times, 0.025, 1)';
               
