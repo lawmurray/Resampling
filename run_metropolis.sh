@@ -1,8 +1,5 @@
 #!/bin/sh
 
-export KMP_AFFINITY="compact"
-export CONFIG_OPTS="--with-cuda"
-export OUTPUT_SUFFIX="gpu"
 export COMMON_OPTS="--Zs 9 --Ps 19 --reps 256 --without-sort --disable-assert --enable-single --enable-cuda --nthreads 8"
 
 # run Metropolis resampler for different numbers of steps

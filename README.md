@@ -6,13 +6,15 @@ Synopsis
 
     ./run_cpu.sh
     ./run_gpu.sh
-    ./run_metropolis.sh
+    ./run_metropolis_cpu.sh
+    ./run_metropolis_gpu.sh
 
 or on a cluster:
 
     qsub -t 0-15 qsub_run_cpu.sh
     qsub -t 0-15 qsub_run_gpu.sh
-    qsub -t 0-15 qsub_run_metropolis.sh
+    qsub -t 0-15 qsub_run_metropolis_cpu.sh
+    qsub -t 0-15 qsub_run_metropolis_gpu.sh
 
 This runs all experiments.
 
