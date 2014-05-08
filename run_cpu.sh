@@ -1,7 +1,10 @@
 #!/bin/sh
 
 export KMP_AFFINITY=compact
-export CONFIG_OPTS=""
-export OUTPUT_SUFFIX="cpu"
 
-./run.sh
+for SEED in `seq 0 15` do
+  export CONFIG_OPTS="--seed $SEED"
+  export OUTPUT_SUFFIX="cpu-$SEED"
+
+  ./run.sh
+done

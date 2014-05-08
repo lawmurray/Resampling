@@ -1,0 +1,8 @@
+name: Resampling
+version: 1.0.0
+author: Lawrence Murray
+email: lawrence.murray@csiro.au
+website-url: http://www.github.com/lawmurray/Resampling
+download-url: http://www.github.com/lawmurray/Resampling/archive/master.tar.gz
+github-url: http://www.github.com/lawmurray/Resampling
+description: Package for running timing, bias and MSE tests on the resampling algorithms provided by LibBi.
