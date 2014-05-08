@@ -4,14 +4,14 @@
 % $Date$
 
 % -*- texinfo -*-
-% @deftypefn {Function File} plot_bias ()
+% @deftypefn {Function File} plot_mse ()
 %
-% Plot bias.
+% Plot mse.
 %
 % @end itemize
 % @end deftypefn
 %
-function plot_bias(device, algorithm, style, z)
+function plot_mse(device, algorithm, style, z)
     if nargin < 3
         print_usage ();
     elseif nargin < 4
@@ -19,7 +19,7 @@ function plot_bias(device, algorithm, style, z)
     end
     
     % config
-    ax = [4 22 1e-3 1];
+    ax = [4 22 1e-2 1e2];
     linestyles = {
          '-'; '-'; '-'; '-'; '-'; '--'; '--';
     };
@@ -37,14 +37,12 @@ function plot_bias(device, algorithm, style, z)
         l2Ps = log2(Ps);
         if !isempty(z)
             Zs = ncread(file, 'Z')(z);
-            x = ncread(file, 'bias2')(:,z)./ncread(file, 'tr_var')(:,z);
+            x = ncread(file, 'bias2')(:,z) + ncread(file, 'tr_var')(:,z);
         else
             Zs = ncread(file, 'Z');
-            bias2 = ncread(file, 'bias2');
-            tr_var = ncread(file, 'tr_var');
-            x = bias2./(tr_var + bias2);
+            x = ncread(file, 'bias2') + ncread(file, 'tr_var');
         end
-        result = [ result x ];
+        result = [ result x./repmat(double(Ps), 1, length(Zs)) ];
         
         run = run + 1;
         file = sprintf('results/%s-%s-%d.nc', tolower(algorithm),

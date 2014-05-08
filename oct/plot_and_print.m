@@ -39,8 +39,8 @@ function plot_and_print ()
     system(sprintf('pdfcrop %s %s', file, file));
       
     % time, bias and variance plots
-    plots = {'times'; 'bias'; 'var'};
-    ylabels = {'Time (s)'; '||Bias(o)||^2/N'; 'tr(Var(o))/N'};
+    plots = {'times'; 'bias'; 'mse'};
+    ylabels = {'Time (s)'; '||Bias(o)||^2/MSE(o)'; 'MSE(o)/N'};
     for i = 1:length(plots)
         f = str2func(sprintf('plot_%s', plots{i}));
         clf;
@@ -143,11 +143,11 @@ function plot_and_print ()
     ylabel(ylabels{2});
     hold off;
     subplot(2, 3, 2);
-    plot_var('GPU', 'Metropolis-c1', 4, 9);
+    plot_mse('GPU', 'Metropolis-c1', 4, 9);
     hold on;
-    plot_var('GPU', 'Metropolis-c2', 4, 9);
-    plot_var('GPU', 'Metropolis-c4', 4, 9);
-    plot_var('GPU', 'Metropolis-c8', 4, 9);
+    plot_mse('GPU', 'Metropolis-c2', 4, 9);
+    plot_mse('GPU', 'Metropolis-c4', 4, 9);
+    plot_mse('GPU', 'Metropolis-c8', 4, 9);
     grid on;
     grid minor off;
     xlabel('log_2 N');
